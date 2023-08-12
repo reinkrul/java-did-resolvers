@@ -1,5 +1,6 @@
 package nl.reinkrul.did.jwk;
 
-public class Resolver {
-
+public interface Resolver {
+    ResolutionResult Resolve()
+    ResolutionResult ResolvePresentation()
 }
