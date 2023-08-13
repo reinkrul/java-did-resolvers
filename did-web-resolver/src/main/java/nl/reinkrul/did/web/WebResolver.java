@@ -16,13 +16,19 @@ public class WebResolver implements Resolver {
 
     private static final String PREFIX = "did:web:";
     private final HttpClient httpClient;
+    private final String protocol;
 
     public WebResolver() {
-        httpClient = HttpClient.newBuilder().build();
+        this(HttpClient.newBuilder().build());
     }
 
     public WebResolver(HttpClient httpClient) {
+        this(httpClient, "https");
+    }
+
+    protected WebResolver(HttpClient httpClient, String protocol) {
         this.httpClient = httpClient;
+        this.protocol = protocol;
     }
 
     @Override
@@ -70,9 +76,9 @@ public class WebResolver implements Resolver {
             throw new InvalidWebDIDException();
         }
 
-        var url = "https://" + didStr;
+        var url = protocol + "://" + didStr;
         if (didStr.contains("/")) {
-            // Subpath, append did.json
+            // Sub path, append did.json
             url += "/did.json";
         } else {
             // No path, use well-known
