@@ -1,9 +1,27 @@
 # java-did-resolvers
 A set of DID resolvers in Java with minimal dependencies.
 
-# Status
+# Supported DID methods
 
-Work in progress.
+## [Web DID Method (did:web)](https://w3c-ccg.github.io/did-method-web/)
+
+Maven dependency:
+```xml
+<dependency>
+    <groupId>nl.reinkrul</groupId>
+    <artifactId>did-web-resolver</artifactId>
+</dependency>
+```
+
+## [JWK DID Method (did:jwk)](https://github.com/quartzjer/did-jwk/blob/main/spec.md) (in progress)
+
+Maven dependency:
+```xml
+<dependency>
+    <groupId>nl.reinkrul</groupId>
+    <artifactId>did-jwk-resolver</artifactId>
+</dependency>
+```
 
 # Compliancy
 
