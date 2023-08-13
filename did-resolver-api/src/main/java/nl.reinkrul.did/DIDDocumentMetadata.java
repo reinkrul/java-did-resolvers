@@ -1,4 +1,4 @@
-package nl.reinkrul.did.jwk;
+package nl.reinkrul.did;
 
 public class DIDDocumentMetadata {
 }

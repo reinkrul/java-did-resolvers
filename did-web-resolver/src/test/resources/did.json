@@ -1,0 +1,36 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/jws-2020/v1"
+  ],
+  "id": "did:web:example.com",
+  "verificationMethod": [
+    {
+      "controller": "did:web:example.com",
+      "id": "did:web:example.com#key-1",
+      "publicKeyJwk": {
+        "crv": "P-256",
+        "kty": "EC",
+        "x": "BFVo-ARGRBRb0aCN9SaZOjAYZCBNPHv3GRHDtqa-iEI",
+        "y": "FTl1Ko5QTAj-bqD-53PLGRwkB5O5jMCNkVASE9YlMkg"
+      },
+      "type": "JsonWebKey2020"
+    }
+  ],
+  "authentication": [
+    "did:web:example.com#key-1"
+  ],
+  "assertionMethod": [
+    "did:web:example.com#key-1"
+  ],
+  "keyAgreement": [
+    "did:web:example.com#key-1"
+  ],
+  "service": [
+    {
+      "id": "did:web:example.com#vcs",
+      "type": "VerifiableCredentialService",
+      "serviceEndpoint": "https://example.com/vc/"
+    }
+  ]
+}

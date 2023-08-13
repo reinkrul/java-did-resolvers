@@ -1,0 +1,98 @@
+package nl.reinkrul.did.web;
+
+import foundation.identity.did.DIDDocument;
+import nl.reinkrul.did.*;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+
+public class WebResolver implements Resolver {
+
+    private static final String PREFIX = "did:web:";
+    private final HttpClient httpClient;
+
+    public WebResolver() {
+        httpClient = HttpClient.newBuilder().build();
+    }
+
+    public WebResolver(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    @Override
+    public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws IOException, InterruptedException {
+        var resolutionResult = ResolvePresentation(did, resolutionOptions);
+        var contentType = resolutionResult.getDIDResolutionMetadata().getContentType();
+        // Up until the first ; (could contain parameters, e.g. charset=utf-8)
+        if (contentType.contains(";")) {
+            contentType = contentType.substring(0, contentType.indexOf(';'));
+        }
+        var result = switch (contentType) {
+            case "application/did+json", "application/did+ld+json", "application/json" -> {
+                var didDocument = DIDDocument.fromJson(new String(resolutionResult.getDIDDocumentBytes()));
+                yield new ResolutionResult(
+                        didDocument, null, new DIDResolutionMetadata(null),
+                        resolutionResult.getDIDDocumentMetadata()
+                );
+            }
+            default -> throw new IOException("did:web DID resolve returned unsupported Content-Type: " + contentType);
+        };
+        if (!did.equals(result.getDIDDocument().getId())) {
+            throw new IOException("did:web resolved DID document with different ID: " + result.getDIDDocument().getId() + " (expected: " + did + ")");
+        }
+        return result;
+    }
+
+    @Override
+    public ResolutionResult ResolvePresentation(URI did, ResolutionOptions resolutionOptions) throws IOException, InterruptedException {
+        var didStr = did.toString();
+        if (!didStr.startsWith(PREFIX)) {
+            throw new InvalidWebDIDException();
+        }
+        if (didStr.contains("/")) {
+            // Invalid path-encoding, needs to be done with semicolons.
+            throw new InvalidWebDIDException();
+        }
+        // Strip prefix
+        didStr = didStr.substring(PREFIX.length());
+        // Replace colons with slashes
+        didStr = didStr.replace(':', '/');
+        // Decode percent-encoded characters, allowed by DID core spec
+        didStr = URLDecoder.decode(didStr, StandardCharsets.UTF_8);
+        // Check for resulting empty paths (DID ending with semicolon or with double semicolon)
+        if (didStr.endsWith("/") || didStr.contains("//")) {
+            throw new InvalidWebDIDException();
+        }
+
+        var url = "https://" + didStr;
+        if (didStr.contains("/")) {
+            // Subpath, append did.json
+            url += "/did.json";
+        } else {
+            // No path, use well-known
+            url += "/.well-known/did.json";
+        }
+
+        final HttpRequest httpRequest;
+        try {
+            httpRequest = HttpRequest.newBuilder().GET().uri(new URI(url)).build();
+        } catch (URISyntaxException e) {
+            throw new IOException("did:web DID lead to invalid URI", e);
+        }
+        var httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
+        if (httpResponse.statusCode() < 200 || httpResponse.statusCode() >= 300) {
+            throw new IOException("did:web DID resolve returned non-OK status code: " + httpResponse.statusCode());
+        }
+        var contentType = httpResponse.headers().firstValue("Content-Type");
+        if (contentType.isEmpty()) {
+            throw new IOException("did:web DID resolve returned no Content-Type");
+        }
+        return new ResolutionResult(null, httpResponse.body(), new DIDResolutionMetadata(contentType.get()), new DIDDocumentMetadata());
+    }
+}
