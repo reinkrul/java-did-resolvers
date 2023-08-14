@@ -8,7 +8,7 @@ A set of DID resolvers in Java with minimal dependencies.
 Maven dependency:
 ```xml
 <dependency>
-    <groupId>nl.reinkrul</groupId>
+    <groupId>nl.reinkrul.did</groupId>
     <artifactId>did-web-resolver</artifactId>
 </dependency>
 ```
@@ -18,7 +18,7 @@ Maven dependency:
 Maven dependency:
 ```xml
 <dependency>
-    <groupId>nl.reinkrul</groupId>
+    <groupId>nl.reinkrul.did</groupId>
     <artifactId>did-jwk-resolver</artifactId>
 </dependency>
 ```
