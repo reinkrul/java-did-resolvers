@@ -19,6 +19,13 @@ public class JWKResolver extends BaseDIDResolver {
 
     @Override
     public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws InterruptedException, DIDResolutionException {
+        var resolutionResult = ResolvePresentation(did, resolutionOptions);
+        var didDocument = DIDDocument.fromJson(new String(resolutionResult.getDIDDocumentBytes()));
+        return new ResolutionResult(didDocument, null, new DIDResolutionMetadata(null), new DIDDocumentMetadata());
+    }
+
+    @Override
+    public ResolutionResult ResolvePresentation(URI did, ResolutionOptions resolutionOptions) throws InterruptedException, DIDResolutionException {
         validateDID(did, PREFIX);
         byte[] jwkBytes;
         try {
@@ -30,7 +37,7 @@ public class JWKResolver extends BaseDIDResolver {
         try {
             jwk = JWK.parse(new String(jwkBytes));
         } catch (ParseException e) {
-            throw new DIDResolutionException("did:jwk contains invalid base64 encoded ID", e);
+            throw new DIDResolutionException("did:jwk contains invalid JWK", e);
         }
 
         VerificationMethod verificationMethod;
@@ -60,18 +67,9 @@ public class JWKResolver extends BaseDIDResolver {
                         "keyAgreement", List.of(verificationMethod.getId())
                 ))
                 .build();
-        return new ResolutionResult(didDocument, null, new DIDResolutionMetadata(null), new DIDDocumentMetadata());
-    }
-
-    @Override
-    public ResolutionResult ResolvePresentation(URI did, ResolutionOptions resolutionOptions) throws InterruptedException, DIDResolutionException {
-        var result = Resolve(did, resolutionOptions);
-        var json = result.getDIDDocument().toJson();
         return new ResolutionResult(
-                null,
-                json.getBytes(),
-                new DIDResolutionMetadata("application/json"),
-                result.getDIDDocumentMetadata()
+                null, didDocument.toJson().getBytes(),
+                new DIDResolutionMetadata("application/did+ld+json"), new DIDDocumentMetadata()
         );
     }
 }
