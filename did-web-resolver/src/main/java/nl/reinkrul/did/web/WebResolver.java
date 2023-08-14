@@ -12,7 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
-public class WebResolver implements Resolver {
+public class WebResolver extends BaseDIDResolver {
 
     private static final String PREFIX = "did:web:";
     private final HttpClient httpClient;
@@ -32,7 +32,7 @@ public class WebResolver implements Resolver {
     }
 
     @Override
-    public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws IOException, InterruptedException {
+    public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws IOException, InterruptedException, DIDResolutionException {
         var resolutionResult = ResolvePresentation(did, resolutionOptions);
         var contentType = resolutionResult.getDIDResolutionMetadata().getContentType();
         // Up until the first ; (could contain parameters, e.g. charset=utf-8)
@@ -56,14 +56,12 @@ public class WebResolver implements Resolver {
     }
 
     @Override
-    public ResolutionResult ResolvePresentation(URI did, ResolutionOptions resolutionOptions) throws IOException, InterruptedException {
+    public ResolutionResult ResolvePresentation(URI did, ResolutionOptions resolutionOptions) throws InterruptedException, DIDResolutionException {
+        validateDID(did, PREFIX);
         var didStr = did.toString();
-        if (!didStr.startsWith(PREFIX)) {
-            throw new InvalidWebDIDException();
-        }
         if (didStr.contains("/")) {
             // Invalid path-encoding, needs to be done with semicolons.
-            throw new InvalidWebDIDException();
+            throw new DIDResolutionException("did:web contains invalid path-separators");
         }
         // Strip prefix
         didStr = didStr.substring(PREFIX.length());
@@ -73,7 +71,7 @@ public class WebResolver implements Resolver {
         didStr = URLDecoder.decode(didStr, StandardCharsets.UTF_8);
         // Check for resulting empty paths (DID ending with semicolon or with double semicolon)
         if (didStr.endsWith("/") || didStr.contains("//")) {
-            throw new InvalidWebDIDException();
+            throw new DIDResolutionException("did:web contains empty path-segments");
         }
 
         var url = protocol + "://" + didStr;
@@ -89,15 +87,20 @@ public class WebResolver implements Resolver {
         try {
             httpRequest = HttpRequest.newBuilder().GET().uri(new URI(url)).build();
         } catch (URISyntaxException e) {
-            throw new IOException("did:web DID lead to invalid URI", e);
+            throw new DIDResolutionException("did:web translates to invalid URI", e);
         }
-        var httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
+        HttpResponse<byte[]> httpResponse;
+        try {
+            httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray());
+        } catch (IOException e) {
+            throw new DIDResolutionException("did:web DID resolve failed", e);
+        }
         if (httpResponse.statusCode() < 200 || httpResponse.statusCode() >= 300) {
-            throw new IOException("did:web DID resolve returned non-OK status code: " + httpResponse.statusCode());
+            throw new DIDResolutionException("did:web DID resolve returned non-OK status code: " + httpResponse.statusCode());
         }
         var contentType = httpResponse.headers().firstValue("Content-Type");
         if (contentType.isEmpty()) {
-            throw new IOException("did:web DID resolve returned no Content-Type");
+            throw new DIDResolutionException("did:web DID resolve returned no Content-Type");
         }
         return new ResolutionResult(null, httpResponse.body(), new DIDResolutionMetadata(contentType.get()), new DIDDocumentMetadata());
     }

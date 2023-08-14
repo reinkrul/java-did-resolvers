@@ -1,5 +1,6 @@
 package nl.reinkrul.did.web;
 
+import nl.reinkrul.did.DIDResolutionException;
 import nl.reinkrul.did.ResolutionOptions;
 import nl.reinkrul.did.ResolutionResult;
 import org.junit.jupiter.api.Test;
@@ -63,7 +64,7 @@ class WebResolverTest {
     ArgumentCaptor<HttpRequest> httpRequest;
 
     @Test
-    void resolve_ApplicationJson() throws URISyntaxException, IOException, InterruptedException {
+    void resolve_ApplicationJson() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/json");
         var resolver = new WebResolver(httpClient);
@@ -76,7 +77,7 @@ class WebResolverTest {
     }
 
     @Test
-    void resolve_ApplicationJsonWithParameter() throws URISyntaxException, IOException, InterruptedException {
+    void resolve_ApplicationJsonWithParameter() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/json;charset=utf-8");
         var resolver = new WebResolver(httpClient);
@@ -89,7 +90,7 @@ class WebResolverTest {
     }
 
     @Test
-    void resolve_ApplicationDidJson() throws URISyntaxException, IOException, InterruptedException {
+    void resolve_ApplicationDidJson() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/did+json");
         var resolver = new WebResolver(httpClient);
@@ -102,7 +103,7 @@ class WebResolverTest {
     }
 
     @Test
-    void resolve_ApplicationDidLdJson() throws URISyntaxException, IOException, InterruptedException {
+    void resolve_ApplicationDidLdJson() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/did+ld+json");
         var resolver = new WebResolver(httpClient);
@@ -137,7 +138,7 @@ class WebResolverTest {
     }
 
     @Test
-    void resolvePresentation_WellKnown() throws URISyntaxException, IOException, InterruptedException {
+    void resolvePresentation_WellKnown() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/json");
         var resolver = new WebResolver(httpClient);
@@ -151,7 +152,7 @@ class WebResolverTest {
     }
 
     @Test
-    void resolvePresentation_WellKnown_Port() throws URISyntaxException, IOException, InterruptedException {
+    void resolvePresentation_WellKnown_Port() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/json");
         var resolver = new WebResolver(httpClient);
@@ -166,7 +167,7 @@ class WebResolverTest {
     }
 
     @Test
-    void resolvePresentation_SubPath() throws URISyntaxException, IOException, InterruptedException {
+    void resolvePresentation_SubPath() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/json");
         var resolver = new WebResolver(httpClient);
@@ -180,7 +181,7 @@ class WebResolverTest {
     }
 
     @Test
-    void resolvePresentation_SubPath_Port() throws URISyntaxException, IOException, InterruptedException {
+    void resolvePresentation_SubPath_Port() throws URISyntaxException, IOException, InterruptedException, DIDResolutionException {
         var document = exampleDocument();
         mockResponse(document, 200, "application/json");
         var resolver = new WebResolver(httpClient);
@@ -197,28 +198,28 @@ class WebResolverTest {
     void resolvePresentation_NotAWebDID() {
         var resolver = new WebResolver(httpClient);
 
-        assertThrows(InvalidWebDIDException.class, () -> resolver.ResolvePresentation(new URI("did:example:123"), null));
+        assertThrows(DIDResolutionException.class, () -> resolver.ResolvePresentation(new URI("did:example:123"), null));
     }
 
     @Test
     void resolvePresentation_IncorrectPathEncoding() {
         var resolver = new WebResolver(httpClient);
 
-        assertThrows(InvalidWebDIDException.class, () -> resolver.ResolvePresentation(new URI("did:web:example.com/subpath"), null));
+        assertThrows(DIDResolutionException.class, () -> resolver.ResolvePresentation(new URI("did:web:example.com/subpath"), null));
     }
 
     @Test
     void resolvePresentation_EmptySubPathPostfix() {
         var resolver = new WebResolver(httpClient);
 
-        assertThrows(InvalidWebDIDException.class, () -> resolver.ResolvePresentation(new URI("did:web:example.com:"), null));
+        assertThrows(DIDResolutionException.class, () -> resolver.ResolvePresentation(new URI("did:web:example.com:"), null));
     }
 
     @Test
     void resolvePresentation_EmptySubPathInBetween() {
         var resolver = new WebResolver(httpClient);
 
-        assertThrows(InvalidWebDIDException.class, () -> resolver.ResolvePresentation(new URI("did:web:example.com::subpath"), null));
+        assertThrows(DIDResolutionException.class, () -> resolver.ResolvePresentation(new URI("did:web:example.com::subpath"), null));
     }
 
     @Test
