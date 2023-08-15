@@ -18,14 +18,14 @@ public class JWKResolver extends BaseDIDResolver {
     private static final String PREFIX = "did:jwk:";
 
     @Override
-    public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws InterruptedException, DIDResolutionException {
+    public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws DIDResolutionException {
         var resolutionResult = ResolvePresentation(did, resolutionOptions);
         var didDocument = DIDDocument.fromJson(new String(resolutionResult.getDIDDocumentBytes()));
         return new ResolutionResult(didDocument, null, new DIDResolutionMetadata(null), new DIDDocumentMetadata());
     }
 
     @Override
-    public ResolutionResult ResolvePresentation(URI did, ResolutionOptions resolutionOptions) throws InterruptedException, DIDResolutionException {
+    public ResolutionResult ResolvePresentation(URI did, ResolutionOptions resolutionOptions) throws DIDResolutionException {
         validateDID(did, PREFIX);
         byte[] jwkBytes;
         try {

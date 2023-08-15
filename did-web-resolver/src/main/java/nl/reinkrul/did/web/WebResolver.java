@@ -32,7 +32,7 @@ public class WebResolver extends BaseDIDResolver {
     }
 
     @Override
-    public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws IOException, InterruptedException, DIDResolutionException {
+    public ResolutionResult Resolve(URI did, ResolutionOptions resolutionOptions) throws InterruptedException, DIDResolutionException {
         var resolutionResult = ResolvePresentation(did, resolutionOptions);
         var contentType = resolutionResult.getDIDResolutionMetadata().getContentType();
         // Up until the first ; (could contain parameters, e.g. charset=utf-8)
@@ -47,10 +47,10 @@ public class WebResolver extends BaseDIDResolver {
                         resolutionResult.getDIDDocumentMetadata()
                 );
             }
-            default -> throw new IOException("did:web DID resolve returned unsupported Content-Type: " + contentType);
+            default -> throw new DIDResolutionException("did:web DID resolve returned unsupported Content-Type: " + contentType);
         };
         if (!did.equals(result.getDIDDocument().getId())) {
-            throw new IOException("did:web resolved DID document with different ID: " + result.getDIDDocument().getId() + " (expected: " + did + ")");
+            throw new DIDResolutionException("did:web resolved DID document with different ID: " + result.getDIDDocument().getId() + " (expected: " + did + ")");
         }
         return result;
     }

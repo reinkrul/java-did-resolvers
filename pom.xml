@@ -58,4 +58,56 @@
       <url>https://repo.danubetech.com/repository/maven-releases/</url>
     </repository>
   </repositories>
+
+  <profiles>
+    <profile>
+      <id>sign-artifacts</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadoc</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>aggregate-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+<!--          <plugin>-->
+<!--            <artifactId>maven-gpg-plugin</artifactId>-->
+<!--            <configuration>-->
+<!--              <gpgArguments>-->
+<!--                <arg>&#45;&#45;pinentry-mode</arg>-->
+<!--                <arg>loopback</arg>-->
+<!--              </gpgArguments>-->
+<!--            </configuration>-->
+<!--            <executions>-->
+<!--              <execution>-->
+<!--                <id>sign-artifacts</id>-->
+<!--                <phase>verify</phase>-->
+<!--                <goals>-->
+<!--                  <goal>sign</goal>-->
+<!--                </goals>-->
+<!--              </execution>-->
+<!--            </executions>-->
+<!--          </plugin>-->
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

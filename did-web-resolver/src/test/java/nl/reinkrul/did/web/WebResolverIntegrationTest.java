@@ -1,6 +1,7 @@
 package nl.reinkrul.did.web;
 
 import com.sun.net.httpserver.HttpServer;
+import nl.reinkrul.did.DIDResolutionException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,7 @@ class WebResolverIntegrationTest {
     }
 
     @Test
-    public void resolve() throws URISyntaxException, IOException, InterruptedException {
+    public void resolve() throws URISyntaxException, InterruptedException, DIDResolutionException {
         var resolver = new WebResolver(HttpClient.newHttpClient(), "http");
 
         var result = resolver.Resolve(new URI("did:web:localhost%3A" + server.getAddress().getPort()), null);
