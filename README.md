@@ -1,4 +1,7 @@
 # java-did-resolvers
+
+![Build Status](https://github.com/reinkrul/java-did-resolvers/actions/workflows/maven.yml/badge.svg)
+
 A set of DID resolvers in Java with minimal dependencies.
 
 # Supported DID methods
