@@ -1,6 +1,7 @@
 # java-did-resolvers
 
 ![Build Status](https://github.com/reinkrul/java-did-resolvers/actions/workflows/maven.yml/badge.svg?branch=main)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/nl.reinkrul.did/did-resolvers/badge.svg?style=flat)](https://search.maven.org/artifact/nl.reinkrul.did/did-resolvers)
 
 A set of DID resolvers in Java with minimal dependencies.
 
@@ -13,6 +14,7 @@ Maven dependency:
 <dependency>
     <groupId>nl.reinkrul.did</groupId>
     <artifactId>did-web-resolver</artifactId>
+    <version>0.1.0</version>
 </dependency>
 ```
 
@@ -23,6 +25,7 @@ Maven dependency:
 <dependency>
     <groupId>nl.reinkrul.did</groupId>
     <artifactId>did-jwk-resolver</artifactId>
+    <version>0.1.0</version>
 </dependency>
 ```
 

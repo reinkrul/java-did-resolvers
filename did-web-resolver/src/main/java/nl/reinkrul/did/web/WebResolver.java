@@ -12,6 +12,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * DID resolver for did:web DIDs.
+ */
 public class WebResolver extends BaseDIDResolver {
 
     private static final String PREFIX = "did:web:";

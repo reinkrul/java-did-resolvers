@@ -2,13 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>did-resolver-api</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <name>DID Resolvers</name>
+  <version>0.1.0</version>
+  <name>DID Resolver API</name>
   <packaging>jar</packaging>
   <parent>
     <groupId>nl.reinkrul.did</groupId>
     <artifactId>did-resolvers</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
 
   <dependencies>
@@ -17,4 +17,18 @@
       <artifactId>did-common-java</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

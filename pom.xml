@@ -3,9 +3,31 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.reinkrul.did</groupId>
   <artifactId>did-resolvers</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <name>DID Resolvers</name>
   <packaging>pom</packaging>
+  <url>https://github.com/reinkrul/java-did-resolvers</url>
+  <description>Java client library for resolving DIDs.</description>
+  <scm>
+    <connection>https://github.com/reinkrul/java-did-resolvers.git</connection>
+    <developerConnection>https://github.com/reinkrul/java-did-resolvers.git</developerConnection>
+    <url>https://github.com/reinkrul/java-did-resolvers</url>
+  </scm>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/license/mit/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Rein Krul</name>
+      <email>info@reinkrul.nl</email>
+      <organization>Rein Krul IT Consultancy</organization>
+      <organizationUrl>https://www.reinkrul.nl</organizationUrl>
+    </developer>
+  </developers>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
@@ -28,7 +50,7 @@
       <dependency>
         <groupId>nl.reinkrul.did</groupId>
         <artifactId>did-resolver-api</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
       </dependency>
       <!-- Test -->
       <dependency>
@@ -59,54 +81,69 @@
     </repository>
   </repositories>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
   <profiles>
     <profile>
       <id>sign-artifacts</id>
       <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadoc</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>aggregate-jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-<!--          <plugin>-->
-<!--            <artifactId>maven-gpg-plugin</artifactId>-->
-<!--            <configuration>-->
-<!--              <gpgArguments>-->
-<!--                <arg>&#45;&#45;pinentry-mode</arg>-->
-<!--                <arg>loopback</arg>-->
-<!--              </gpgArguments>-->
-<!--            </configuration>-->
-<!--            <executions>-->
-<!--              <execution>-->
-<!--                <id>sign-artifacts</id>-->
-<!--                <phase>verify</phase>-->
-<!--                <goals>-->
-<!--                  <goal>sign</goal>-->
-<!--                </goals>-->
-<!--              </execution>-->
-<!--            </executions>-->
-<!--          </plugin>-->
-        </plugins>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-source-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>attach-sources</id>
+                  <phase>verify</phase>
+                  <goals>
+                    <goal>jar-no-fork</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>attach-javadoc</id>
+                  <goals>
+                    <goal>jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <configuration>
+                <gpgArguments>
+                  <arg>--pinentry-mode</arg>
+                  <arg>loopback</arg>
+                </gpgArguments>
+              </configuration>
+              <executions>
+                <execution>
+                  <id>sign-artifacts</id>
+                  <phase>verify</phase>
+                  <goals>
+                    <goal>sign</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
       </build>
     </profile>
   </profiles>

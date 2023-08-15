@@ -5,7 +5,6 @@ import foundation.identity.did.DIDDocument;
 import foundation.identity.did.VerificationMethod;
 import nl.reinkrul.did.*;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -13,6 +12,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DID resolver for did:jwk DIDs.
+ */
 public class JWKResolver extends BaseDIDResolver {
 
     private static final String PREFIX = "did:jwk:";
