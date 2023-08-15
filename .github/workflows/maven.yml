@@ -12,6 +12,9 @@ on:
   push:
     branches: [ "*" ]
 
+permissions:
+  repository-projects: write
+
 jobs:
   build:
 
