@@ -13,7 +13,7 @@ on:
     branches: [ "*" ]
 
 permissions:
-  repository-projects: write
+  repo: write
 
 jobs:
   build:
