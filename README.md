@@ -18,7 +18,7 @@ Maven dependency:
 </dependency>
 ```
 
-## [JWK DID Method (did:jwk)](https://github.com/quartzjer/did-jwk/blob/main/spec.md) (in progress)
+## [JWK DID Method (did:jwk)](https://github.com/quartzjer/did-jwk/blob/main/spec.md)
 
 Maven dependency:
 ```xml
