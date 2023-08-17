@@ -22,6 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for {@link WebResolver}.
+ * It performs the test cases specified by the <a href="https://github.com/decentralized-identity/web-did-resolver/blob/master/src/__tests__/resolver.test.ts">reference implementation</a>, and more.
+ */
 @ExtendWith(MockitoExtension.class)
 class WebResolverTest {
 
@@ -30,7 +34,7 @@ class WebResolverTest {
     }
 
     private static URI exampleSubPathDID() throws URISyntaxException {
-        return new URI("did:web:example.com:level1:level2");
+        return new URI("did:web:example.com:level1:level%2B2");
     }
 
     private static byte[] exampleDocument() throws URISyntaxException, DIDResolutionException, IOException {
@@ -175,7 +179,7 @@ class WebResolverTest {
         assertNull(result.getDIDDocument());
         assertEquals(document, result.getDIDDocumentBytes());
         assertEquals("application/json", result.getDIDResolutionMetadata().getContentType());
-        assertEquals("https://example.com/level1/level2/did.json", httpRequest.getValue().uri().toString());
+        assertEquals("https://example.com/level1/level+2/did.json", httpRequest.getValue().uri().toString());
     }
 
     @Test
